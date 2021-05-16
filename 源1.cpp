@@ -1,14 +1,14 @@
-//¸ÃÑùÀıÎªÕı³£¹¦ÄÜµÄ OpenCL ³ÌĞò£¬ÈçĞè½«ÆäÊÊÅä¸ø myopencl.h ½øĞĞ·ÖÎö£¬ÔòĞèÒª°´ÕÕ×¢ÊÍ¶Ô´úÂë½øĞĞĞŞ¸Ä¡£ 
+//è¯¥æ ·ä¾‹ä¸ºæ­£å¸¸åŠŸèƒ½çš„ OpenCL ç¨‹åºï¼Œå¦‚éœ€å°†å…¶é€‚é…ç»™ myopencl.h è¿›è¡Œåˆ†æï¼Œåˆ™éœ€è¦æŒ‰ç…§æ³¨é‡Šå¯¹ä»£ç è¿›è¡Œä¿®æ”¹ã€‚ 
 #include <iostream>
 #include <fstream>
 #include <sstream>
-//#include "myopencl.h"			//ÈçĞè½«ÆäÊÊÅä¸ø myopencl.h£¬Ôò½«¸ÃĞĞ×¢ÊÍÈ¡Ïû
-#include <CL/cl.h>				//ÈçĞè½«ÆäÊÊÅä¸ø myopencl.h£¬Ôò½«¸ÃĞĞ×¢ÊÍ
+//#include "myopencl.h"			//å¦‚éœ€å°†å…¶é€‚é…ç»™ myopencl.hï¼Œåˆ™å°†è¯¥è¡Œæ³¨é‡Šå–æ¶ˆ
+#include <CL/cl.h>				//å¦‚éœ€å°†å…¶é€‚é…ç»™ myopencl.hï¼Œåˆ™å°†è¯¥è¡Œæ³¨é‡Š
 const int ARRAY_SIZE = 10;
 
 #pragma warning( disable : 4996 )
 
-//Ò»¡¢ Ñ¡ÔñOpenCLÆ½Ì¨²¢´´½¨Ò»¸öÉÏÏÂÎÄ
+//ä¸€ã€ é€‰æ‹©OpenCLå¹³å°å¹¶åˆ›å»ºä¸€ä¸ªä¸Šä¸‹æ–‡
 cl_context CreateContext()
 {
 	cl_int errNum;
@@ -16,7 +16,7 @@ cl_context CreateContext()
 	cl_platform_id firstPlatformId;
 	cl_context context = NULL;
 
-	//Ñ¡Ôñ¿ÉÓÃµÄÆ½Ì¨ÖĞµÄµÚÒ»¸ö
+	//é€‰æ‹©å¯ç”¨çš„å¹³å°ä¸­çš„ç¬¬ä¸€ä¸ª
 	errNum = clGetPlatformIDs(1, &firstPlatformId, &numPlatforms);
 	if (errNum != CL_SUCCESS || numPlatforms <= 0)
 	{
@@ -24,7 +24,7 @@ cl_context CreateContext()
 		return NULL;
 	}
 
-	//´´½¨Ò»¸öOpenCLÉÏÏÂÎÄ»·¾³
+	//åˆ›å»ºä¸€ä¸ªOpenCLä¸Šä¸‹æ–‡ç¯å¢ƒ
 	cl_context_properties contextProperties[] =
 	{
 		CL_CONTEXT_PLATFORM,
@@ -38,7 +38,7 @@ cl_context CreateContext()
 }
 
 
-//¶ş¡¢ ´´½¨Éè±¸²¢´´½¨ÃüÁî¶ÓÁĞ
+//äºŒã€ åˆ›å»ºè®¾å¤‡å¹¶åˆ›å»ºå‘½ä»¤é˜Ÿåˆ—
 cl_command_queue CreateCommandQueue(cl_context context, cl_device_id *device, int num,int order)
 {
 	cl_int errNum;
@@ -46,7 +46,7 @@ cl_command_queue CreateCommandQueue(cl_context context, cl_device_id *device, in
 	cl_command_queue commandQueue = NULL;
 	size_t deviceBufferSize = -1;
 
-	// »ñÈ¡Éè±¸»º³åÇø´óĞ¡
+	// è·å–è®¾å¤‡ç¼“å†²åŒºå¤§å°
 	errNum = clGetContextInfo(context, CL_CONTEXT_DEVICES, 0, NULL, &deviceBufferSize);
 	
 	if (deviceBufferSize <= 0)
@@ -55,10 +55,10 @@ cl_command_queue CreateCommandQueue(cl_context context, cl_device_id *device, in
 		return NULL;
 	}
 
-	// ÎªÉè±¸·ÖÅä»º´æ¿Õ¼ä
+	// ä¸ºè®¾å¤‡åˆ†é…ç¼“å­˜ç©ºé—´
 	devices = new cl_device_id[deviceBufferSize / sizeof(cl_device_id)];
 	errNum = clGetContextInfo(context, CL_CONTEXT_DEVICES, deviceBufferSize, devices, NULL);
-	//Ñ¡È¡¿ÉÓÃÉè±¸ÖĞµÄµÚÒ»¸ö
+	//é€‰å–å¯ç”¨è®¾å¤‡ä¸­çš„ç¬¬ä¸€ä¸ª
 	if(order==1){
 		commandQueue = clCreateCommandQueue(context, devices[num],CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, NULL);
 	}
@@ -69,7 +69,7 @@ cl_command_queue CreateCommandQueue(cl_context context, cl_device_id *device, in
 	return commandQueue;
 }
 
-// Èı¡¢´´½¨ºÍ¹¹½¨³ÌĞò¶ÔÏó
+// ä¸‰ã€åˆ›å»ºå’Œæ„å»ºç¨‹åºå¯¹è±¡
 cl_program CreateProgram(cl_context context, cl_device_id device, const char* fileName)
 {
 	cl_int errNum;
@@ -96,7 +96,7 @@ cl_program CreateProgram(cl_context context, cl_device_id device, const char* fi
 	return program;
 }
 
-//´´½¨ºÍ¹¹½¨³ÌĞò¶ÔÏó
+//åˆ›å»ºå’Œæ„å»ºç¨‹åºå¯¹è±¡
 bool CreateMemObjects(cl_context context, cl_mem memObjects[3],
 	float *a, float *b)
 {
@@ -110,7 +110,7 @@ bool CreateMemObjects(cl_context context, cl_mem memObjects[3],
 }
 
 
-// ÊÍ·ÅOpenCL×ÊÔ´
+// é‡Šæ”¾OpenCLèµ„æº
 void Cleanup(cl_context context, cl_command_queue commandQueue,
 	cl_program program, cl_kernel kernel, cl_mem memObjects[3])
 {
@@ -134,7 +134,7 @@ void Cleanup(cl_context context, cl_command_queue commandQueue,
 
 int main(int argc, char** argv)
 {
-	//opencl_start();			//ÈçĞè½«ÆäÊÊÅä¸ø myopencl.h£¬Ôò½«¸ÃĞĞ×¢ÊÍÈ¡Ïû
+	//opencl_start();			//å¦‚éœ€å°†å…¶é€‚é…ç»™ myopencl.hï¼Œåˆ™å°†è¯¥è¡Œæ³¨é‡Šå–æ¶ˆ
 	cl_context context = 0;
 	cl_command_queue commandQueue = 0;
 	cl_command_queue commandQueue2 = 0;
@@ -144,17 +144,17 @@ int main(int argc, char** argv)
 	cl_kernel kernel[8];
 	cl_mem memObjects[8][3] = {{ 0, 0, 0 },{ 0, 0, 0 },{ 0, 0, 0 },{ 0, 0, 0 },{ 0, 0, 0 },{ 0, 0, 0 },{ 0, 0, 0 }};
 	cl_int errNum;
-	cl_event event[20];			//ÈçĞè½«ÆäÊÊÅä¸ø myopencl.h£¬Ôò½«¸ÃĞĞ×¢ÊÍ
-	// Ò»¡¢Ñ¡ÔñOpenCLÆ½Ì¨²¢´´½¨Ò»¸öÉÏÏÂÎÄ
+	cl_event event[20];			//å¦‚éœ€å°†å…¶é€‚é…ç»™ myopencl.hï¼Œåˆ™å°†è¯¥è¡Œæ³¨é‡Š
+	// ä¸€ã€é€‰æ‹©OpenCLå¹³å°å¹¶åˆ›å»ºä¸€ä¸ªä¸Šä¸‹æ–‡
 	context = CreateContext();
 	
-	// ¶ş¡¢ ´´½¨Éè±¸²¢´´½¨ÃüÁî¶ÓÁĞ
+	// äºŒã€ åˆ›å»ºè®¾å¤‡å¹¶åˆ›å»ºå‘½ä»¤é˜Ÿåˆ—
 	commandQueue = CreateCommandQueue(context, &device,0,1);
 	commandQueue2 = CreateCommandQueue(context, &device2,1,0);
-	//´´½¨ºÍ¹¹½¨³ÌĞò¶ÔÏó
-	program = CreateProgram(context, device, "C:\\Users\\Administrator\\Desktop\\±ÏÉè\\code 1.17\\HelloWorld.cl");
-
-	// ËÄ¡¢ ´´½¨OpenCLÄÚºË²¢·ÖÅäÄÚ´æ¿Õ¼ä
+	//åˆ›å»ºå’Œæ„å»ºç¨‹åºå¯¹è±¡
+	program = CreateProgram(context, device, "C:\\Users\\Administrator\\Desktop\\code 1.17\\HelloWorld.cl");
+	//HelloWorld.clçš„è·¯å¾„
+	// å››ã€ åˆ›å»ºOpenCLå†…æ ¸å¹¶åˆ†é…å†…å­˜ç©ºé—´
 	kernel[0] = clCreateKernel(program, "kernel0", NULL);
 	kernel[1] = clCreateKernel(program, "kernel1", NULL);
 	kernel[2] = clCreateKernel(program, "kernel2", NULL);
@@ -163,7 +163,7 @@ int main(int argc, char** argv)
 	kernel[5] = clCreateKernel(program, "kernel5", NULL);
 	kernel[6] = clCreateKernel(program, "kernel6", NULL);
 	kernel[7] = clCreateKernel(program, "kernel7", NULL);
-	//´´½¨Òª´¦ÀíµÄÊı¾İ
+	//åˆ›å»ºè¦å¤„ç†çš„æ•°æ®
 	float result[8][ARRAY_SIZE];
 	float a[8][ARRAY_SIZE];
 	float b[8][ARRAY_SIZE];
@@ -174,7 +174,7 @@ int main(int argc, char** argv)
 			b[i][j] = (float)(ARRAY_SIZE - j);
 		}
 	}
-	//´´½¨ÄÚ´æ¶ÔÏó
+	//åˆ›å»ºå†…å­˜å¯¹è±¡
 	if (!CreateMemObjects(context, memObjects[0], a[0], b[0]))
 	{
 		Cleanup(context, commandQueue, program, kernel[0], memObjects[0]);
@@ -215,7 +215,7 @@ int main(int argc, char** argv)
 		Cleanup(context, commandQueue2, program, kernel[7], memObjects[7]);
 		return 1;
 	}
-	// Îå¡¢ ÉèÖÃÄÚºËÊı¾İ²¢Ö´ĞĞÄÚºË
+	// äº”ã€ è®¾ç½®å†…æ ¸æ•°æ®å¹¶æ‰§è¡Œå†…æ ¸
 	for(int i=0;i<8;i++){
 		errNum = clSetKernelArg(kernel[i], 0, sizeof(cl_mem), &memObjects[i][0]);
 		errNum |= clSetKernelArg(kernel[i], 1, sizeof(cl_mem), &memObjects[i][1]);
@@ -229,7 +229,7 @@ int main(int argc, char** argv)
 	clSetKernelArg(kernel[5], 0, sizeof(cl_mem), ARG_KERNEL_TYPE_ADD);
 	clSetKernelArg(kernel[6], 0, sizeof(cl_mem), ARG_KERNEL_TYPE_SUB);
 	clSetKernelArg(kernel[7], 0, sizeof(cl_mem), ARG_KERNEL_TYPE_MUL);*/
-	//ÈçĞè½«ÆäÊÊÅä¸ø myopencl.h£¬Ôò½«¸Ã¿é×¢ÊÍÈ¡Ïû
+	//å¦‚éœ€å°†å…¶é€‚é…ç»™ myopencl.hï¼Œåˆ™å°†è¯¥å—æ³¨é‡Šå–æ¶ˆ
 	size_t globalWorkSize[1] = { ARRAY_SIZE };
 	size_t localWorkSize[1] = { 1 };
 
@@ -269,7 +269,7 @@ int main(int argc, char** argv)
 		globalWorkSize, localWorkSize,
 		0, NULL, NULL);
 
-	// Áù¡¢ ¶ÁÈ¡Ö´ĞĞ½á¹û²¢ÊÍ·ÅOpenCL×ÊÔ´
+	// å…­ã€ è¯»å–æ‰§è¡Œç»“æœå¹¶é‡Šæ”¾OpenCLèµ„æº
 	errNum = clEnqueueReadBuffer(commandQueue, memObjects[0][2], CL_TRUE,
 		0, ARRAY_SIZE * sizeof(float), result[0],
 		0, NULL, NULL);
@@ -311,9 +311,9 @@ int main(int argc, char** argv)
 		std::cout << std::endl;
 		std::cout << "Executed kernel"<< i << " successfully." << std::endl;
 	}
-	//ÈçĞè½«ÆäÊÊÅä¸ø myopencl.h£¬Ôò½«¸Ã for Ñ­»·¿é×¢ÊÍ
+	//å¦‚éœ€å°†å…¶é€‚é…ç»™ myopencl.hï¼Œåˆ™å°†è¯¥ for å¾ªç¯å—æ³¨é‡Š
 
-	//opencl_end();		//ÈçĞè½«ÆäÊÊÅä¸ø myopencl.h£¬Ôò½«¸ÃĞĞ×¢ÊÍÈ¡Ïû
+	//opencl_end();		//å¦‚éœ€å°†å…¶é€‚é…ç»™ myopencl.hï¼Œåˆ™å°†è¯¥è¡Œæ³¨é‡Šå–æ¶ˆ
 		
 	return 0;
 
