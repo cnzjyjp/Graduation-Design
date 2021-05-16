@@ -152,8 +152,8 @@ int main(int argc, char** argv)
 	commandQueue = CreateCommandQueue(context, &device,0,1);
 	commandQueue2 = CreateCommandQueue(context, &device2,1,0);
 	//创建和构建程序对象
-	program = CreateProgram(context, device, "C:\\Users\\Administrator\\Desktop\\code 1.17\\HelloWorld.cl");
-	//HelloWorld.cl的路径
+	program = CreateProgram(context, device, "C:\\Users\\Administrator\\Desktop\\code 1.17\\HelloWorld.cl");   //HelloWorld.cl的路径
+
 	// 四、 创建OpenCL内核并分配内存空间
 	kernel[0] = clCreateKernel(program, "kernel0", NULL);
 	kernel[1] = clCreateKernel(program, "kernel1", NULL);
