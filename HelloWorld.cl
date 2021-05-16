@@ -1,3 +1,5 @@
+//源1.cpp调用的文件，使用时请注意路径问题
+//无需任何修改
 __kernel void kernel0(__global const float *a,
 	__global const float *b,
 	__global float *result)
